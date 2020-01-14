@@ -1,0 +1,67 @@
+
+<mat-card fxFlex>
+  <mat-card-title>
+    Products Form
+  </mat-card-title>
+
+  <mat-card-content>
+    <form [formGroup]="productForm" (ngSubmit)="save()" 
+        fxLayout="column" fxLayoutAlign="space-between" #form="ngForm">
+      <input type="hidden" formControlName="_id">
+
+      <mat-form-field>
+        <input matInput placeholder="Product Name" formControlName="name">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Stock" formControlName="stock" type="number">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Price" formControlName="price" type="number">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select placeholder="Departments" formControlName="departments" multiple>
+          <mat-select-trigger>
+            {{productForm.value.departments ? productForm.value.departments[0]?.name : ''}}
+            <span *ngIf="productForm.value.departments?.length > 1" class="additional-selection">
+              (+{{productForm.value.departments.length - 1}} {{productForm.value.departments.length === 2 ? 'other' : 'others'}})
+            </span>
+          </mat-select-trigger>
+          <mat-option *ngFor="let dep of departments" [value]="dep">{{dep.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div fxLayout="row" fxLayoutAlign="end end">
+        <button mat-button color="primary" fxFlex="10" type="submit">Save</button>
+        <button mat-button color="warn" fxFlex="10" type="reset">Cancel</button>
+      </div>
+    </form>
+
+
+    <ng-container *ngIf="products?.length>0; else empty">
+      <mat-list>
+        <h3 mat-subheader>Products</h3>
+        <mat-list-item *ngFor="let prod of products">
+          <mat-icon mat-list-icon>folder</mat-icon>
+          <h4 mat-line>{{prod.name}}</h4>
+          <h4 mat-line>Price: {{prod.price | currency:"R$ "}} - Stock: {{prod.stock}}</h4>
+          <mat-chip-list mat-line>
+            <mat-chip *ngFor="let d of prod.departments">{{d.name}}</mat-chip>
+          </mat-chip-list>
+          <button mat-icon-button color="accent" (click)="delete(prod)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" (click)="edit(prod)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>   
+    </ng-container> 
+    <ng-template #empty>
+      <div><em>Empty</em></div>
+    </ng-template>
+
+  </mat-card-content>
+</mat-card>
